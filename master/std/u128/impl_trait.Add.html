@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `Add` impl trait in `u128`."><meta name="keywords" content="sway, swaylang, sway-lang, Add"><link rel="icon" href="../assets/sway-logo.svg"><title>Add in u128 - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module u128</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">Add</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl core::ops::Add for U128 {
+    /// Add a `U128` to a `U128`. Panics on overflow.
+    fn add(self, other: Self) -&gt; Self {
+        let mut upper_128 = self.upper.overflowing_add(other.upper);
+        assert(upper_128.upper == 0);
+        let lower_128 = self.lower.overflowing_add(other.lower);
+        if lower_128.upper &gt; 0 {
+            upper_128 = upper_128.lower.overflowing_add(lower_128.upper);
+        }
+        assert(upper_128.upper == 0);
+        U128 {
+            upper: upper_128.lower,
+            lower: lower_128.lower,
+        }
+    }
+}</code></pre></div></section></div></main></body></html>
