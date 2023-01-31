@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `Result` impl trait in `result`."><meta name="keywords" content="sway, swaylang, sway-lang, Result"><link rel="icon" href="../assets/sway-logo.svg"><title>Result in result - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module result</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">Result</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl&lt;T, E&gt; Result&lt;T, E&gt; {
+    /// Returns `true` if the result is `Ok`.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// enum Error {
+    ///     NotFound,
+    ///     Invalid,
+    /// }
+    ///
+    /// let x: Result&lt;u64, Error&gt; = Result::Ok(42);
+    /// assert(x.is_ok());
+    ///
+    /// let y: Result&lt;u64, Error&gt; = Result::Err(Error::NotFound));
+    /// assert(!x.is_ok());
+    /// ```
+    pub fn is_ok(self) -&gt; bool {
+        match self {
+            Result::Ok(_) =&gt; true,
+            _ =&gt; false,
+        }
+    }
+    /// Returns `true` if the result is `Err`.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// enum Error {
+    ///     NotFound,
+    ///     Invalid,
+    /// }
+    ///
+    /// let x: Result&lt;u64, Error&gt; = Result::Ok(42);
+    /// assert(!x.is_err());
+    ///
+    /// let y: Result&lt;u64, Error&gt; = Result::Err(Error::NotFound));
+    /// assert(x.is_err());
+    /// ```
+    pub fn is_err(self) -&gt; bool {
+        match self {
+            Result::Ok(_) =&gt; false,
+            _ =&gt; true,
+        }
+    }
+    /// Returns the contained `Ok` value, consuming the `self` value.
+    ///
+    /// Because this function may revert, its use is generally discouraged.
+    /// Instead, prefer to use pattern matching and handle the `Err`
+    /// case explicitly.
+    ///
+    /// ### Reverts
+    ///
+    /// Reverts if the self value is `Err`.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// enum Error {
+    ///     NotFound,
+    ///     Invalid,
+    /// }
+    ///
+    /// let x: Result&lt;u64, Error&gt; = Result::Ok(42);
+    /// assert(x.unwrap() == 42);
+    ///
+    /// let y: Result&lt;u64, Error&gt; = Result::Err(Error::NotFound));
+    /// assert(x.unwrap() == 42); // reverts
+    /// ```
+    pub fn unwrap(self) -&gt; T {
+        match self {
+            Result::Ok(inner_value) =&gt; inner_value,
+            _ =&gt; revert(0),
+        }
+    }
+    /// Returns the contained `Ok` value or a provided default.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// enum Error {
+    ///     NotFound,
+    ///     Invalid,
+    /// }
+    ///
+    /// let x: Result&lt;u64, Error&gt; = Result::Ok(42);
+    /// assert(x.unwrap_or(69) == 42);
+    ///
+    /// let y: Result&lt;u64, Error&gt; = Result::Err(Error::NotFound));
+    /// assert(x.unwrap_or(69) == 69);
+    /// ```
+    pub fn unwrap_or(self, default: T) -&gt; T {
+        match self {
+            Result::Ok(inner_value) =&gt; inner_value,
+            Result::Err(_) =&gt; default,
+        }
+    }
+}</code></pre></div></section></div></main></body></html>

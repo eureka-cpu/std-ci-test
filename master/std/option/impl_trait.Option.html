@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `Option` impl trait in `option`."><meta name="keywords" content="sway, swaylang, sway-lang, Option"><link rel="icon" href="../assets/sway-logo.svg"><title>Option in option - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module option</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">Option</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl&lt;T&gt; Option&lt;T&gt; {
+    /// Returns `true` if the option is a `Some` value.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// let x: Option&lt;u32&gt; = Option::Some(2);
+    /// assert(x.is_some());
+    ///
+    /// let x: Option&lt;u32&gt; = Option::None;
+    /// assert(!x.is_some());
+    /// ```
+    pub fn is_some(self) -&gt; bool {
+        match self {
+            Option::Some(_) =&gt; true,
+            _ =&gt; false,
+        }
+    }
+    /// Returns `true` if the option is a `None` value.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// let x: Option&lt;u32&gt; = Option::Some(2);
+    /// assert(!x.is_none());
+    ///
+    /// let x: Option&lt;u32&gt; = Option::None;
+    /// assert(x.is_none());
+    /// ```
+    pub fn is_none(self) -&gt; bool {
+        match self {
+            Option::Some(_) =&gt; false,
+            _ =&gt; true,
+        }
+    }
+    /// Returns the contained `Some` value, consuming the `self` value.
+    ///
+    /// Because this function may revert, its use is generally discouraged.
+    /// Instead, use pattern matching and handle the `None`
+    /// case explicitly, or call `unwrap_or`.
+    ///
+    /// `unwrap_or`: `Option::unwrap_or`
+    ///
+    /// ### Reverts
+    ///
+    /// Reverts if the self value equals `None`.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// let x = Option::Some(42);
+    /// assert(x.unwrap() == 42);
+    /// ```
+    ///
+    /// ```
+    /// let x: Option&lt;u64&gt; = Option::None;
+    /// assert(x.unwrap() == 42); // fails
+    /// ```
+    pub fn unwrap(self) -&gt; T {
+        match self {
+            Option::Some(inner_value) =&gt; inner_value,
+            _ =&gt; revert(0),
+        }
+    }
+    /// Returns the contained `Some` value or a provided default.
+    ///
+    /// `unwrap_or`: `Option::unwrap_or`
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// assert(Option::Some(42).unwrap_or(69) == 42);
+    /// assert(Option::None::&lt;u64&gt;().unwrap_or(69) == 69);
+    /// ```
+    pub fn unwrap_or(self, default: T) -&gt; T {
+        match self {
+            Option::Some(x) =&gt; x,
+            Option::None =&gt; default,
+        }
+    }
+    /// Transforms the `Option&lt;T&gt;` into a `Result&lt;T, E&gt;`, mapping `Some(v)` to
+    /// `Ok(v)` and `None` to `Err(e)`.
+    ///
+    /// `Ok(v)`  : `Result::Ok`
+    /// `Err(e)` : `Result::Err`
+    /// `Some(v)`: `Option::Some`
+    /// `ok_or`  : `Option::ok_or`
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// let x = Option::Some(42);
+    /// match x.ok_or(0) {
+    ///     Result::Ok(inner) =&gt; assert(inner == 42),
+    ///     Result::Err =&gt; revert(0),
+    /// }
+    ///
+    /// let x:Option&lt;u64&gt; = Option::None;
+    /// match x.ok_or(0) {
+    ///     Result::Ok(_) =&gt; revert(0),
+    ///     Result::Err(e) =&gt; assert(e == 0),
+    /// }
+    /// ```
+    pub fn ok_or&lt;E&gt;(self, err: E) -&gt; Result&lt;T, E&gt; {
+        match self {
+            Option::Some(v) =&gt; Result::Ok(v),
+            Option::None =&gt; Result::Err(err),
+        }
+    }
+}</code></pre></div></section></div></main></body></html>

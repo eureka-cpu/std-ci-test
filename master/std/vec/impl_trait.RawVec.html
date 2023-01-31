@@ -1,0 +1,34 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `RawVec` impl trait in `vec`."><meta name="keywords" content="sway, swaylang, sway-lang, RawVec"><link rel="icon" href="../assets/sway-logo.svg"><title>RawVec in vec - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module vec</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">RawVec</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl&lt;T&gt; RawVec&lt;T&gt; {
+    /// Create a new `RawVec` with zero capacity.
+    pub fn new() -&gt; Self {
+        Self {
+            ptr: alloc::&lt;T&gt;(0),
+            cap: 0,
+        }
+    }
+    /// Creates a `RawVec` (on the heap) with exactly the capacity for a
+    /// `[T; capacity]`. This is equivalent to calling `RawVec::new` when
+    /// `capacity` is zero.
+    pub fn with_capacity(capacity: u64) -&gt; Self {
+        Self {
+            ptr: alloc::&lt;T&gt;(capacity),
+            cap: capacity,
+        }
+    }
+    /// Gets the pointer of the allocation.
+    pub fn ptr(self) -&gt; raw_ptr {
+        self.ptr
+    }
+    /// Gets the capacity of the allocation.
+    pub fn capacity(self) -&gt; u64 {
+        self.cap
+    }
+    /// Grow the capacity of the vector by doubling its current capacity. The
+    /// `realloc` function allocates memory on the heap and copies the data
+    /// from the old allocation to the new allocation.
+    pub fn grow(ref mut self) {
+        let new_cap = if self.cap == 0 { 1 } else { 2 * self.cap };
+        self.ptr = realloc::&lt;T&gt;(self.ptr, self.cap, new_cap);
+        self.cap = new_cap;
+    }
+}</code></pre></div></section></div></main></body></html>

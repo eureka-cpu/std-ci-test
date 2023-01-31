@@ -1,0 +1,64 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `Shift` impl trait in `u256`."><meta name="keywords" content="sway, swaylang, sway-lang, Shift"><link rel="icon" href="../assets/sway-logo.svg"><title>Shift in u256 - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module u256</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">Shift</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl core::ops::Shift for U256 {
+    fn lsh(self, shift_amount: u64) -&gt; Self {
+        let (word_1, word_2, word_3, word_4) = self.decompose();
+        let mut w1 = 0;
+        let mut w2 = 0;
+        let mut w3 = 0;
+        let mut w4 = 0;
+        let w = shift_amount / 64;
+        let b = shift_amount % 64;
+        if w == 0 {
+            let (shifted_2, carry_2) = lsh_with_carry(word_2, b);
+            w1 = (word_1 &lt;&lt; b) + carry_2;
+            let (shifted_3, carry_3) = lsh_with_carry(word_3, b);
+            w2 = shifted_2 + carry_3;
+            let (shifted_4, carry_4) = lsh_with_carry(word_4, b);
+            w3 = shifted_3 + carry_4;
+            w4 = shifted_4;
+        } else if w == 1 {
+            let (shifted_3, carry_3) = lsh_with_carry(word_3, b);
+            w1 = (word_2 &lt;&lt; b) + carry_3;
+            let (shifted_4, carry_4) = lsh_with_carry(word_4, b);
+            w2 = shifted_3 + carry_4;
+            w3 = shifted_4;
+        } else if w == 2 {
+            let (shifted_4, carry_4) = lsh_with_carry(word_4, b);
+            w1 = (word_3 &lt;&lt; b) + carry_4;
+            w2 = shifted_4;
+        } else if w == 3 {
+            w1 = word_4 &lt;&lt; b;
+        }
+        U256::from((w1, w2, w3, w4))
+    }
+    fn rsh(self, shift_amount: u64) -&gt; Self {
+        let (word_1, word_2, word_3, word_4) = self.decompose();
+        let mut w1 = 0;
+        let mut w2 = 0;
+        let mut w3 = 0;
+        let mut w4 = 0;
+        let w = shift_amount / 64;
+        let b = shift_amount % 64;
+        if w == 0 {
+            let (shifted_3, carry_3) = rsh_with_carry(word_3, b);
+            w4 = (word_4 &gt;&gt; b) + carry_3;
+            let (shifted_2, carry_2) = rsh_with_carry(word_2, b);
+            w3 = shifted_3 + carry_2;
+            let (shifted_1, carry_1) = rsh_with_carry(word_1, b);
+            w2 = shifted_2 + carry_1;
+            w1 = shifted_1;
+        } else if w == 1 {
+            let (shifted_2, carry_2) = rsh_with_carry(word_2, b);
+            w4 = (word_3 &gt;&gt; b) + carry_2;
+            let (shifted_1, carry_1) = rsh_with_carry(word_1, b);
+            w3 = shifted_2 + carry_1;
+            w2 = shifted_1;
+        } else if w == 2 {
+            let (shifted_1, carry_1) = rsh_with_carry(word_1, b);
+            w4 = (word_2 &gt;&gt; b) + carry_1;
+            w3 = shifted_1;
+        } else if w == 3 {
+            w4 = word_1 &gt;&gt; b;
+        };
+        U256::from((w1, w2, w3, w4))
+    }
+}</code></pre></div></section></div></main></body></html>
