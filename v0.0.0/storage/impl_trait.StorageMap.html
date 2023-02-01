@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `StorageMap` impl trait in `storage`."><meta name="keywords" content="sway, swaylang, sway-lang, StorageMap"><link rel="icon" href="../assets/sway-logo.svg"><title>StorageMap in storage - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module storage</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">StorageMap</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl&lt;K, V&gt; StorageMap&lt;K, V&gt; {
+    /// Inserts a key-value pair into the map.
+    ///
+    /// ### Arguments
+    ///
+    /// * `key` - The key to which the value is paired.
+    /// * `value` - The value to be stored.
+    ///
+    /// ### Examples
+    ///
+    /// ```sway
+    /// storage {
+    ///     map: StorageMap&lt;u64, bool&gt; = StorageMap {}
+    /// }
+    ///
+    /// fn foo() {
+    ///     let key = 5_u64;
+    ///     let value = true;
+    ///     storage.map.insert(key, value);
+    ///     let retrieved_value = storage.map.get(key);
+    ///     assert(value == retrieved_value);
+    /// }
+    /// ```
+    #[storage(write)]
+    pub fn insert(self, key: K, value: V) {
+        let key = sha256((key, __get_storage_key()));
+        store::&lt;V&gt;(key, value);
+    }
+    /// Retrieves a value previously stored using a key.
+    ///
+    /// If no value was previously stored at `key`, `Option::None` is returned. Otherwise,
+    /// `Option::Some(value)` is returned, where `value` is the value stored at `key`.
+    ///
+    /// ### Arguments
+    ///
+    /// * `key` - The key to which the value is paired.
+    ///
+    /// ### Examples
+    ///
+    /// ```sway
+    /// storage {
+    ///     map: StorageMap&lt;u64, bool&gt; = StorageMap {}
+    /// }
+    ///
+    /// fn foo() {
+    ///     let key = 5_u64;
+    ///     let value = true;
+    ///     storage.map.insert(key, value);
+    ///     let retrieved_value = storage.map.get(key).unwrap();
+    ///     assert(value == retrieved_value);
+    /// }
+    /// ```
+    #[storage(read)]
+    pub fn get(self, key: K) -&gt; Option&lt;V&gt; {
+        let key = sha256((key, __get_storage_key()));
+        get::&lt;V&gt;(key)
+    }
+    /// Clears a value previously stored using a key
+    ///
+    /// Return a Boolean indicating whether there was a value previously stored at `key`.
+    ///
+    /// ### Arguments
+    ///
+    /// * `key` - The key to which the value is paired
+    ///
+    /// ### Examples
+    ///
+    /// ```sway
+    /// storage {
+    ///     map: StorageMap&lt;u64, bool&gt; = StorageMap {}
+    /// }
+    ///
+    /// fn foo() {
+    ///     let key = 5_u64;
+    ///     let value = true;
+    ///     storage.map.insert(key, value);
+    ///     let removed = storage.map.remove(key);
+    ///     assert(removed);
+    ///     assert(storage.map.get(key).is_none());
+    /// }
+    /// ```
+    #[storage(write)]
+    pub fn remove(self, key: K) -&gt; bool {
+        let key = sha256((key, __get_storage_key()));
+        clear::&lt;V&gt;(key)
+    }
+}</code></pre></div></section></div></main></body></html>

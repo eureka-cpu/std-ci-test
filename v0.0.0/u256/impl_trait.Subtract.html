@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="swaydoc"><meta name="description" content="API documentation for the Sway `Subtract` impl trait in `u256`."><meta name="keywords" content="sway, swaylang, sway-lang, Subtract"><link rel="icon" href="../assets/sway-logo.svg"><title>Subtract in u256 - Sway</title><link rel="stylesheet" type="text/css" href="../assets/normalize.css"><link rel="stylesheet" type="text/css" href="../assets/swaydoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../assets/ayu.css"></head><body class="swaydoc impl_trait"><nav class="sidebar"><a class="sidebar-logo" href="index.html"><div class="logo-container"><img class="sway-logo" src="../assets/sway-logo.svg" alt="logo"></div></a><h2 class="location"><a href="index.html">Module u256</a></h2><div class="sidebar-elems"><section><div class="block"><ul></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Searchbar unimplemented, see issue #3480..." type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">impl trait <a class="impl_trait" href="#">Subtract</a></span></h1></div><div class="docblock item-decl"><pre class="sway impl_trait"><code>impl core::ops::Subtract for U256 {
+    /// Subtract a `U256` from a `U256`. Panics of overflow.
+    fn subtract(self, other: Self) -&gt; Self {
+        if self == other {
+            return Self::min();
+        } else if other == Self::min() {
+            return self;
+        }
+        assert(self &gt; other);
+        let (word_1, word_2, word_3, word_4) = self.decompose();
+        let (other_word_1, other_word_2, other_word_3, other_word_4) = other.decompose();
+        let mut result_a = word_1 - other_word_1;
+        let mut result_b = 0;
+        if word_2 &lt; other_word_2 {
+            result_b = u64::max() - (other_word_2 - word_2 - 1);
+            result_a -= 1;
+        } else {
+            result_b = word_2 - other_word_2;
+        }
+        let mut result_c = 0;
+        if word_3 &lt; other_word_3 {
+            result_c = u64::max() - (other_word_3 - word_3 - 1);
+            if result_b &gt; 0 {
+                result_b -= 1;
+            } else {
+                result_a -= 1;
+                result_b = u64::max();
+            }
+        } else {
+            result_c = word_3 - other_word_3;
+        }
+        let mut result_d = 0;
+        if word_4 &lt; other_word_4 {
+            result_d = u64::max() - (other_word_4 - word_4 - 1);
+            if result_c &gt; 0 {
+                result_c -= 1;
+            } else {
+                if result_b &gt; 0 {
+                    result_b -= 1;
+                } else {
+                    result_a -= 1;
+                    result_b = u64::max();
+                }
+                result_c = u64::max();
+            }
+        } else {
+            result_d = word_4 - other_word_4;
+        }
+        U256::from((result_a, result_b, result_c, result_d))
+    }
+}</code></pre></div></section></div></main></body></html>
